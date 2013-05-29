@@ -72,7 +72,7 @@ namespace Pollub.EduConfig
 
                 if (pp.HelpRequested())
                     ShowHelp();
-
+                
                 if (!IsRunningAsAdministrator())
                 {
                     var selfName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
@@ -105,21 +105,31 @@ namespace Pollub.EduConfig
                 if ((silentMode) || (MessageBox.Show(AppResources.Info, AppResources.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes))
                 {
                     var exc = ExitCode.NoError;
-                    var certResult = InstallCACertificate();
-                    if (certResult != 0)
+                    try
                     {
+                        InstallCACertificate();
+                    }
+                    catch (CommandException e)
+                    {
+
                         if (!silentMode)
-                            MessageBox.Show(AppResources.CertFail + " " + certResult, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(AppResources.CertFail + " " + e.Message, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         exc = ExitCode.CertInstallError;
                     }
 
-                    var netshResult = InstallProfile();
-                    if (netshResult != 0)
+                    try
+                    {
+                        InstallNetworkProfile();
+                    }
+                    catch (CommandException e)
                     {
                         if (!silentMode)
-                            MessageBox.Show(AppResources.ProfFail + " " + netshResult, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(AppResources.ProfFail + " " + e.Message, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        else
+                            Console.Error.WriteLine(AppResources.ProfFail + " " + e.Message);
+
                         exc = exc | ExitCode.ProfileInstallError;
-                    }
+                    }                    
 
                     if (exc == ExitCode.NoError)
                         if (!silentMode)
@@ -174,7 +184,7 @@ namespace Pollub.EduConfig
         /// <summary>
         /// Instaluje certyfikat w Trusted Root CA
         /// </summary>
-        private static int InstallCACertificate()
+        private static void InstallCACertificate()
         {
             var cert = Path.GetTempFileName().Replace(".tmp", ".der");
             File.WriteAllBytes(cert, AppResources.plca_cert);
@@ -182,6 +192,8 @@ namespace Pollub.EduConfig
             ProcessStartInfo p = new ProcessStartInfo("certutil", String.Format("-addstore Root \"{0}\"", cert));
             p.Verb = "runas";
             p.WindowStyle = ProcessWindowStyle.Hidden;
+            p.RedirectStandardError = true;
+            p.UseShellExecute = false;
             var certutil = Process.Start(p);
 
             // oczekiwanie na zakończenie certutila
@@ -189,21 +201,25 @@ namespace Pollub.EduConfig
 
             File.Delete(cert);
 
-            return certutil.ExitCode;
+            if (certutil.ExitCode != 0)
+                throw new CommandException(certutil.ExitCode.ToString());
 
         }
 
         /// <summary>
         /// Instaluje profil sieciowy na podstawie pliku XML
         /// </summary>
-        private static int InstallProfile()
+        private static void InstallNetworkProfile()
         {
             var prof = Path.GetTempFileName().Replace(".tmp", ".xml");
-            File.WriteAllBytes(prof, AppResources.wlan0_eduroam);
+            File.WriteAllBytes(prof, AppResources.eduroam_peap);
 
             ProcessStartInfo p = new ProcessStartInfo("netsh", String.Format("wlan add profile filename=\"{0}\" user=all", prof));
+            //ProcessStartInfo p = new ProcessStartInfo("netsh", String.Format("wlan show dafaf", prof));
             p.Verb = "runas";
             p.WindowStyle = ProcessWindowStyle.Hidden;
+            p.RedirectStandardError = true;
+            p.UseShellExecute = false;
             var netsh = Process.Start(p);
 
             // oczekiwanie na zakończenie działania netsh
@@ -211,7 +227,8 @@ namespace Pollub.EduConfig
 
             File.Delete(prof);
 
-            return netsh.ExitCode;
+            if (netsh.ExitCode != 0)
+                throw new CommandException(netsh.ExitCode.ToString());
         }
 
         /// <summary>

@@ -88,6 +88,16 @@ namespace Pollub.EduConfig {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] eduroam_peap {
+            get {
+                object obj = ResourceManager.GetObject("eduroam_peap", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Użycie:
         ///EduConfig.exe [/s] [/?]
         ///
@@ -164,16 +174,6 @@ namespace Pollub.EduConfig {
         internal static string UnhandledException {
             get {
                 return ResourceManager.GetString("UnhandledException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] wlan0_eduroam {
-            get {
-                object obj = ResourceManager.GetObject("wlan0_eduroam", resourceCulture);
-                return ((byte[])(obj));
             }
         }
     }
