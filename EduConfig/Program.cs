@@ -1,6 +1,6 @@
 ﻿/**
  * 
- * EduConfig, wersja 1.0.1
+ * EduConfig, wersja 1.0.2
  * Copyright (C) Politechnika Lubelska 2013
  * Copyright (C) Marcin Badurowicz <m.badurowicz at pollub dot pl>
  * 
@@ -244,7 +244,8 @@ namespace Pollub.EduConfig
 
         /// <summary>
         /// Sprawdza czy system jest obsługiwany oficjalnie
-        /// Oficjalnie wspierane są tylko systemy Windows NT z obsługą netsh (tj. Windows Vista lub nowszy)
+        /// Oficjalnie wspierane są tylko systemy Windows NT z obsługą netsh wlan (tj. Windows Vista lub nowszy),
+        /// prawdopodobnie będzie też działać dla Windows XP
         /// </summary>
         /// <returns></returns>
         private static bool IsSystemSupported()
