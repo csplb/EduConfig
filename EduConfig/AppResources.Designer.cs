@@ -99,13 +99,12 @@ namespace Pollub.EduConfig {
         
         /// <summary>
         ///   Looks up a localized string similar to Użycie:
-        ///EduConfig.exe [/s] [/?]
+        ///EduConfig.exe [/s] [/?] [--version]
         ///
         ///EduConfig automatycznie zainstaluje certyfikat sieci eduroam dodając go do twojego zbioru zaufanych głównych urzędów certyfikacji oraz profil sieciowy. Będzie wymagane podanie nazwy użytkownika i hasła przy pierwszym połączeniu z siecią eduroam.
-        ///Oficjalnie obsługiwane są systemy operacyjne z rodziny Windows NT w wersji 6.0 lub nowszej.
+        ///Oficjalnie obsługiwane są systemy operacyjne z rodziny Windows NT w wersji 6.0 lub nowszej (Windows Vista lub nowszy).
         ///
-        ///  /s - uruchamia w trybie cichym (bez potwierdzeń, bez komunikatów błędów), zwraca kod błędu przez ERRORLEVEL
-        ///  /? - wyświetla te inf [rest of string was truncated]&quot;;.
+        ///  /s - uruchamia w trybie cichym (bez potwierdzeń, bez komunikatów błędów), zwraca kod błędu pr [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Help {
             get {
