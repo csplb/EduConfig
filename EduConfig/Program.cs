@@ -1,9 +1,11 @@
 ﻿/**
  * 
- * EduConfig, wersja 1.0
- * Copyright (C) Politechnika Lubelska 2013, Marcin Badurowicz <m.badurowicz at pollub dot pl>
+ * EduConfig, wersja 1.0.1
+ * Copyright (C) Politechnika Lubelska 2013
+ * Copyright (C) Marcin Badurowicz <m.badurowicz at pollub dot pl>
  * 
- * Aplikacja umożliwiająca automatyczną konfigurację profilu sieci bezprzewodowej eduroam.
+ * Aplikacja umożliwiająca automatyczną konfigurację profilu sieci 
+ * bezprzewodowej eduroam, wraz z instalacją certyfikatu CA.
  *
  * EduConfig is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
