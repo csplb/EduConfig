@@ -1,0 +1,7 @@
+/EduConfig/obj/Debug
+/EduConfig/bin/Debug
+/EduConfig/bin/Release
+/EduConfig/obj/Release
+/*.suo
+
+/EduConfig/*.user
