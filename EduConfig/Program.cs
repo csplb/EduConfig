@@ -197,7 +197,7 @@ namespace Pollub.EduConfig
         private static int InstallProfile()
         {
             var prof = Path.GetTempFileName().Replace(".tmp", ".xml");
-            File.WriteAllText(prof, AppResources.wlan0_eduroam);
+            File.WriteAllBytes(prof, AppResources.wlan0_eduroam);
 
             ProcessStartInfo p = new ProcessStartInfo("netsh", String.Format("wlan add profile filename=\"{0}\" user=all", prof));
             p.Verb = "runas";
@@ -213,7 +213,7 @@ namespace Pollub.EduConfig
         }
 
         /// <summary>
-        /// Sprawdza czy aplikacja jest uruchomiona jako administrator
+        /// Sprawdza czy aplikacja jest uruchomiona z podwyższonymi uprawnieniami
         /// </summary>
         /// <returns></returns>
         private static bool IsRunningAsAdministrator()
@@ -225,6 +225,7 @@ namespace Pollub.EduConfig
 
         /// <summary>
         /// Sprawdza czy system jest obsługiwany oficjalnie
+        /// Oficjalnie wspierane są tylko systemy Windows NT z obsługą netsh (tj. Windows Vista lub nowszy)
         /// </summary>
         /// <returns></returns>
         private static bool IsSystemSupported()

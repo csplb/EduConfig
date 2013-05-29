@@ -161,6 +161,6 @@ Zgłaszaj błędy do &lt;m.badurowicz@pollub.pl&gt;</value>
     <value>Wystąpił nieoczekiwany błąd:</value>
   </data>
   <data name="wlan0_eduroam" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\wlan0-eduroam.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
+    <value>Resources\wlan0-eduroam.xml;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

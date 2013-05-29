@@ -168,28 +168,12 @@ namespace Pollub.EduConfig {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
-        ///&lt;WLANProfile xmlns=&quot;http://www.microsoft.com/networking/WLAN/profile/v1&quot;&gt;
-        ///  &lt;name&gt;eduroam&lt;/name&gt;
-        ///  &lt;SSIDConfig&gt;
-        ///    &lt;SSID&gt;
-        ///      &lt;hex&gt;656475726F616D&lt;/hex&gt;
-        ///      &lt;name&gt;eduroam&lt;/name&gt;
-        ///    &lt;/SSID&gt;
-        ///  &lt;/SSIDConfig&gt;
-        ///  &lt;connectionType&gt;ESS&lt;/connectionType&gt;
-        ///  &lt;connectionMode&gt;auto&lt;/connectionMode&gt;
-        ///  &lt;MSM&gt;
-        ///    &lt;security&gt;
-        ///      &lt;authEncryption&gt;
-        ///        &lt;authentication&gt;WPA2&lt;/authentication&gt;
-        ///        &lt;encryption&gt;AES&lt;/encryption&gt;
-        ///        &lt;useOneX&gt;true&lt;/useOneX&gt;
-        ///        &lt;FIPSMode xmlns [rest of string was truncated]&quot;;.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static string wlan0_eduroam {
+        internal static byte[] wlan0_eduroam {
             get {
-                return ResourceManager.GetString("wlan0_eduroam", resourceCulture);
+                object obj = ResourceManager.GetObject("wlan0_eduroam", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }
