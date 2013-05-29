@@ -1,4 +1,25 @@
-﻿using System;
+﻿/**
+ * 
+ * EduConfig, wersja 1.0
+ * Copyright (C) Politechnika Lubelska 2013, Marcin Badurowicz <m.badurowicz at pollub dot pl>
+ * 
+ * Aplikacja umożliwiająca automatyczną konfigurację profilu sieci bezprzewodowej eduroam.
+ *
+ * EduConfig is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * EduConfig is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with EduConfig. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +31,9 @@ using System.Reflection;
 
 namespace Pollub.EduConfig
 {
+    /// <summary>
+    /// Możliwe kody wyjścia programu w postaci listy flag
+    /// </summary>
     [Flags]
     enum ExitCode : int
     {
@@ -178,10 +202,8 @@ namespace Pollub.EduConfig
             ProcessStartInfo p = new ProcessStartInfo("netsh", String.Format("wlan add profile filename=\"{0}\" user=all", prof));
             p.Verb = "runas";
             p.WindowStyle = ProcessWindowStyle.Hidden;
-            //p.RedirectStandardOutput = true;
             var netsh = Process.Start(p);
 
-            //netsh.StandardOutput.ReadToEnd();
             // oczekiwanie na zakończenie działania netsh
             while (!netsh.HasExited) ;
 
