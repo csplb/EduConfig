@@ -79,7 +79,7 @@ namespace Pollub.EduConfig
                 if ((silentMode) || (MessageBox.Show(AppResources.Info, AppResources.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes))
                 {
                     var exc = ExitCode.NoError;
-                    var certResult = 1;// InstallCACertificate();
+                    var certResult = InstallCACertificate();
                     if (certResult != 0)
                     {
                         if (!silentMode)
