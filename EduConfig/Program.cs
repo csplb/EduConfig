@@ -157,7 +157,7 @@ namespace Pollub.EduConfig
         /// </summary>
         private static void ShowVersion()
         {
-            Console.WriteLine(AppResources.AppName + " " + Assembly.GetExecutingAssembly().GetName().Version);
+            Console.WriteLine(AppResources.AppName + " " + Assembly.GetExecutingAssembly().GetName().Version);            
             Console.WriteLine(AppResources.Copyright);
         }
 
