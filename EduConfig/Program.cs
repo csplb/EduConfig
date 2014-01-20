@@ -53,6 +53,8 @@ namespace Pollub.EduConfig
 
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+
             bool silentMode = false;
 
             try
