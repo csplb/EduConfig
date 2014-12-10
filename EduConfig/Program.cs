@@ -23,14 +23,13 @@
  */
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Security.Principal;
-using System.Text;
 using System.Windows.Forms;
 using Streaia;
-using System.Reflection;
 
 namespace Pollub.EduConfig
 {
@@ -38,7 +37,7 @@ namespace Pollub.EduConfig
     /// Możliwe kody wyjścia programu w postaci listy flag
     /// </summary>
     [Flags]
-    enum ExitCode : int
+    enum ExitCode
     {
         NoError = 0,
         CertInstallError = 1,
@@ -48,6 +47,9 @@ namespace Pollub.EduConfig
         UnhandledException = 16
     }
 
+    /// <summary>
+    /// Typy profili do zainstalowania
+    /// </summary>
     enum ProfileType
     {
         Peap,
@@ -83,7 +85,7 @@ namespace Pollub.EduConfig
 
                 if (!IsRunningAsAdministrator())
                 {
-                    var selfName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    var selfName = Process.GetCurrentProcess().MainModule.FileName;
                     ProcessStartInfo self = new ProcessStartInfo(selfName);
                     self.Verb = "runas";
                     self.WindowStyle = ProcessWindowStyle.Hidden;
@@ -91,9 +93,9 @@ namespace Pollub.EduConfig
 
                     try
                     {
-                        System.Diagnostics.Process.Start(self);
+                        Process.Start(self);
                     }
-                    catch (System.ComponentModel.Win32Exception ex)
+                    catch (Win32Exception)
                     {
                         if (!_silentMode)
                             MessageBox.Show(AppResources.NeedAdmin, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -115,7 +117,7 @@ namespace Pollub.EduConfig
                     var exc = ExitCode.NoError;
                     try
                     {
-                        InstallCACertificate();
+                        InstallCaCertificate();
                     }
                     catch (CommandException e)
                     {                        
@@ -144,11 +146,7 @@ namespace Pollub.EduConfig
             }
             catch (Exception ex)
             {
-                if (!_silentMode)
-                    MessageBox.Show(AppResources.UnhandledException + " " + ex.Message, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                else
-                    Console.Error.WriteLine(AppResources.UnhandledException + " " + ex.Message);
-
+                ErrorMessage(AppResources.UnhandledException, ex);
                 Exit(ExitCode.UnhandledException);
             }
 
@@ -195,7 +193,7 @@ namespace Pollub.EduConfig
         /// <summary>
         /// Instaluje certyfikat w Trusted Root CA
         /// </summary>
-        private static void InstallCACertificate()
+        private static void InstallCaCertificate()
         {
             var cert = Path.GetTempFileName().Replace(".tmp", ".der");
             File.WriteAllBytes(cert, AppResources.plca_cert);
@@ -206,6 +204,8 @@ namespace Pollub.EduConfig
             p.RedirectStandardError = true;
             p.UseShellExecute = false;
             var certutil = Process.Start(p);
+            if (certutil == null)
+                throw new Exception(AppResources.ProcessAlreadyRun);
 
             // oczekiwanie na zakończenie certutila
             while (!certutil.HasExited) ;
@@ -234,6 +234,8 @@ namespace Pollub.EduConfig
             p.RedirectStandardError = true;
             p.UseShellExecute = false;
             var netsh = Process.Start(p);
+            if (netsh == null)
+                throw new Exception(AppResources.ProcessAlreadyRun);
 
             // oczekiwanie na zakończenie działania netsh
             while (!netsh.HasExited) ;
@@ -251,8 +253,13 @@ namespace Pollub.EduConfig
         private static bool IsRunningAsAdministrator()
         {
             WindowsIdentity identity = WindowsIdentity.GetCurrent();
-            WindowsPrincipal principal = new WindowsPrincipal(identity);
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            if (identity != null)
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+
+            return false;
         }
 
         /// <summary>
