@@ -2,7 +2,7 @@
  * 
  * EduConfig
  * 
- * Copyright (C) Politechnika Lubelska 2013
+ * Copyright (C) Politechnika Lubelska 2013-2014
  * Copyright (C) Marcin Badurowicz <m.badurowicz at pollub dot pl>
  * 
  * Aplikacja umożliwiająca automatyczną konfigurację profilu sieci 
@@ -61,7 +61,7 @@ namespace Pollub.EduConfig
         private static ParamParser _pp;
         private static bool _silentMode;
 
-        static void Main(string[] args)
+        static void Main()
         {
             Application.EnableVisualStyles();
 
@@ -166,7 +166,7 @@ namespace Pollub.EduConfig
         /// </summary>
         private static void ShowVersion()
         {
-            Console.WriteLine(AppResources.AppName + " " + Assembly.GetExecutingAssembly().GetName().Version);
+            Console.WriteLine(@"{0} {1}", AppResources.AppName, Assembly.GetExecutingAssembly().GetName().Version);
             Console.WriteLine(AppResources.Copyright);
         }
 
