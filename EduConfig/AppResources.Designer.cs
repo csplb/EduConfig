@@ -151,6 +151,15 @@ namespace Pollub.EduConfig {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Proces jest już uruchomiony..
+        /// </summary>
+        internal static string ProcessAlreadyRun {
+            get {
+                return ResourceManager.GetString("ProcessAlreadyRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instalacja profilu sieciowego się nie powiodła. Błąd netsh:.
         /// </summary>
         internal static string ProfFail {

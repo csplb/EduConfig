@@ -167,4 +167,7 @@ Zgłaszaj błędy do &lt;m.badurowicz@pollub.pl&gt;</value>
   <data name="eduroam_tls" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\eduroam_tls.xml;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ProcessAlreadyRun" xml:space="preserve">
+    <value>Proces jest już uruchomiony.</value>
+  </data>
 </root>
