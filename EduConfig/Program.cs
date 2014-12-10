@@ -170,7 +170,15 @@ namespace Pollub.EduConfig
         /// </summary>
         private static void ShowVersion()
         {
-            Console.WriteLine(@"{0} {1}", AppResources.AppName, Assembly.GetExecutingAssembly().GetName().Version);
+            var assemblyInformationalVersionAttribute = Assembly.GetExecutingAssembly()
+                .GetCustomAttributes(typeof (AssemblyInformationalVersionAttribute), false)[0] as
+                AssemblyInformationalVersionAttribute;
+#if DEBUG
+            var version = assemblyInformationalVersionAttribute != null ? assemblyInformationalVersionAttribute.InformationalVersion : Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+#else
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+#endif
+            Console.WriteLine(@"{0} {1}", AppResources.AppName, version);
             Console.WriteLine(AppResources.Copyright);
         }
 
