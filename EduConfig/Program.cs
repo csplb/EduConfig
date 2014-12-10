@@ -1,6 +1,7 @@
 ﻿/**
  * 
- * EduConfig, wersja 1.0.2
+ * EduConfig
+ * 
  * Copyright (C) Politechnika Lubelska 2013
  * Copyright (C) Marcin Badurowicz <m.badurowicz at pollub dot pl>
  * 
@@ -47,41 +48,46 @@ namespace Pollub.EduConfig
         UnhandledException = 16
     }
 
+    enum ProfileType
+    {
+        Peap,
+        Tls
+    }
+
     class Program
     {
-        private static ParamParser pp;
+        private static ParamParser _pp;
+        private static bool _silentMode;
 
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
 
-            bool silentMode = false;
-
             try
             {
-                pp = new ParamParser(Environment.GetCommandLineArgs());
-                pp.AddExpanded("/s", "/silent");
-                pp.AddExpanded("/?", "--help");
+                _pp = new ParamParser(Environment.GetCommandLineArgs());
+                _pp.AddExpanded("/s", "/silent");
+                _pp.AddExpanded("/?", "--help");
 
-                pp.Parse();
-                silentMode = pp.SwitchExists("/silent");
+                _pp.Parse();
+                _silentMode = _pp.SwitchExists("/silent");
 
-                if (pp.VersionRequested())
+                if (_pp.VersionRequested())
                 {
                     ShowVersion();
                     Exit(ExitCode.NoError);
                 }
 
-                if (pp.HelpRequested())
+                if (_pp.HelpRequested())
                     ShowHelp();
-                
+
                 if (!IsRunningAsAdministrator())
                 {
                     var selfName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
                     ProcessStartInfo self = new ProcessStartInfo(selfName);
                     self.Verb = "runas";
                     self.WindowStyle = ProcessWindowStyle.Hidden;
-                    if (silentMode) self.Arguments = "/silent";
+                    if (_silentMode) self.Arguments = "/silent";
 
                     try
                     {
@@ -89,7 +95,7 @@ namespace Pollub.EduConfig
                     }
                     catch (System.ComponentModel.Win32Exception ex)
                     {
-                        if (!silentMode)
+                        if (!_silentMode)
                             MessageBox.Show(AppResources.NeedAdmin, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                         Exit(ExitCode.NoAdmin);
@@ -98,13 +104,13 @@ namespace Pollub.EduConfig
                     Exit(ExitCode.NoError);
                 }
 
-                if ((!silentMode) && (!IsSystemSupported()))
-                {                    
+                if ((!_silentMode) && (!IsSystemSupported()))
+                {
                     if (MessageBox.Show(AppResources.SystemNotSupported, AppResources.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                        Exit(ExitCode.SystemNotSupported);                    
+                        Exit(ExitCode.SystemNotSupported);
                 }
 
-                if ((silentMode) || (MessageBox.Show(AppResources.Info, AppResources.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes))
+                if ((_silentMode) || (MessageBox.Show(AppResources.Info, AppResources.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes))
                 {
                     var exc = ExitCode.NoError;
                     try
@@ -112,29 +118,23 @@ namespace Pollub.EduConfig
                         InstallCACertificate();
                     }
                     catch (CommandException e)
-                    {
-
-                        if (!silentMode)
-                            MessageBox.Show(AppResources.CertFail + " " + e.Message, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    {                        
+                        ErrorMessage(AppResources.CertFail, e);
                         exc = ExitCode.CertInstallError;
                     }
 
                     try
                     {
-                        InstallNetworkProfile();
+                        InstallNetworkProfile(ProfileType.Peap);
                     }
                     catch (CommandException e)
                     {
-                        if (!silentMode)
-                            MessageBox.Show(AppResources.ProfFail + " " + e.Message, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        else
-                            Console.Error.WriteLine(AppResources.ProfFail + " " + e.Message);
-
+                        ErrorMessage(AppResources.ProfFail, e);                        
                         exc = exc | ExitCode.ProfileInstallError;
-                    }                    
+                    }
 
                     if (exc == ExitCode.NoError)
-                        if (!silentMode)
+                        if (!_silentMode)
                             MessageBox.Show(AppResources.Success, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     Exit(exc);
@@ -144,7 +144,7 @@ namespace Pollub.EduConfig
             }
             catch (Exception ex)
             {
-                if (!silentMode)
+                if (!_silentMode)
                     MessageBox.Show(AppResources.UnhandledException + " " + ex.Message, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 else
                     Console.Error.WriteLine(AppResources.UnhandledException + " " + ex.Message);
@@ -154,12 +154,21 @@ namespace Pollub.EduConfig
 
         }
 
+        private static void ErrorMessage(string message, Exception e)
+        {
+            var errorMessage = string.Format("{0} {1}", message, e.Message);
+            if (!_silentMode)
+                MessageBox.Show(errorMessage, AppResources.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+                Console.Error.WriteLine(errorMessage);
+        }
+
         /// <summary>
         /// Pokazuje informacje o wersji
         /// </summary>
         private static void ShowVersion()
         {
-            Console.WriteLine(AppResources.AppName + " " + Assembly.GetExecutingAssembly().GetName().Version);            
+            Console.WriteLine(AppResources.AppName + " " + Assembly.GetExecutingAssembly().GetName().Version);
             Console.WriteLine(AppResources.Copyright);
         }
 
@@ -211,13 +220,15 @@ namespace Pollub.EduConfig
         /// <summary>
         /// Instaluje profil sieciowy na podstawie pliku XML
         /// </summary>
-        private static void InstallNetworkProfile()
+        private static void InstallNetworkProfile(ProfileType type)
         {
             var prof = Path.GetTempFileName().Replace(".tmp", ".xml");
-            File.WriteAllBytes(prof, AppResources.eduroam_peap);
+            if (type == ProfileType.Peap)
+                File.WriteAllBytes(prof, AppResources.eduroam_peap);
+            else if (type == ProfileType.Tls)
+                File.WriteAllBytes(prof, AppResources.eduroam_tls);
 
             ProcessStartInfo p = new ProcessStartInfo("netsh", String.Format("wlan add profile filename=\"{0}\" user=all", prof));
-            //ProcessStartInfo p = new ProcessStartInfo("netsh", String.Format("wlan show dafaf", prof));
             p.Verb = "runas";
             p.WindowStyle = ProcessWindowStyle.Hidden;
             p.RedirectStandardError = true;
