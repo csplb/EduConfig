@@ -29,7 +29,7 @@ using System.IO;
 using System.Reflection;
 using System.Security.Principal;
 using System.Windows.Forms;
-using Streaia;
+using Ktos.Common;
 
 namespace Pollub.EduConfig
 {
@@ -58,7 +58,7 @@ namespace Pollub.EduConfig
 
     class Program
     {
-        private static ParamParser _pp;
+        private static ArgumentParser _pp;
         private static bool _silentMode;
 
         static void Main()
@@ -67,9 +67,10 @@ namespace Pollub.EduConfig
 
             try
             {
-                _pp = new ParamParser(Environment.GetCommandLineArgs());
+                _pp = new ArgumentParser(Environment.GetCommandLineArgs());
                 _pp.AddExpanded("/s", "/silent");
                 _pp.AddExpanded("/?", "--help");
+                _pp.AddExpanded("/tls", "--tls");
 
                 _pp.Parse();
                 _silentMode = _pp.SwitchExists("/silent");
@@ -127,7 +128,10 @@ namespace Pollub.EduConfig
 
                     try
                     {
-                        InstallNetworkProfile(ProfileType.Peap);
+                        if (_pp.SwitchExists("--tls"))
+                            InstallNetworkProfile(ProfileType.Tls);
+                        else
+                            InstallNetworkProfile(ProfileType.Peap);
                     }
                     catch (CommandException e)
                     {
