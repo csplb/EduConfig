@@ -124,18 +124,22 @@
     <value>Instalacja certyfikatu się nie powiodła. Błąd certutil:</value>
   </data>
   <data name="Copyright" xml:space="preserve">
-    <value>Copyright (C) Politechnika Lubelska 2013</value>
+    <value>Copyright (C) Politechnika Lubelska 2013-2015</value>
   </data>
   <data name="Help" xml:space="preserve">
     <value>Użycie:
-EduConfig.exe [/s] [/?] [--version]
+EduConfig.exe [/s [/tls]] [/?] [--version]
 
 EduConfig automatycznie zainstaluje certyfikat sieci eduroam dodając go do twojego zbioru zaufanych głównych urzędów certyfikacji oraz profil sieciowy. Będzie wymagane podanie nazwy użytkownika i hasła przy pierwszym połączeniu z siecią eduroam.
 Oficjalnie obsługiwane są systemy operacyjne z rodziny Windows NT w wersji 6.0 lub nowszej (Windows Vista lub nowszy).
 
   /s - uruchamia w trybie cichym (bez potwierdzeń, bez komunikatów błędów), zwraca kod błędu przez ERRORLEVEL; w przypadku użycia w trybie wsadowym pamiętaj o uruchomieniu na prawach administratora, w przeciwnym wypadku program sam się zakończy z kodem 0 i uruchomi ponownie swoją instancję o podwyższonych uprawnieniach, przez co kod błędu może nie być do odczytania.
-  /? - wyświetla te informacje
-  --version - pokazuje tylko wersję aplikacji
+ 
+ /tls - wykorzystywane wraz z /s instaluje konfigurację połączenia dla EAP-TLS, nie EAP-PEAP, nie jest instalowany jednak certyfikat użytkownika (ten należy zaimportować własnoręcznie)
+
+ /? - wyświetla te informacje
+  
+ --version - pokazuje tylko wersję aplikacji
 
 Zgłaszaj błędy do &lt;m.badurowicz@pollub.pl&gt;</value>
   </data>

@@ -2,7 +2,7 @@
  * 
  * EduConfig
  * 
- * Copyright (C) Politechnika Lubelska 2013-2014
+ * Copyright (C) Politechnika Lubelska 2013-2015
  * Copyright (C) Marcin Badurowicz <m.badurowicz at pollub dot pl>
  * 
  * Aplikacja umożliwiająca automatyczną konfigurację profilu sieci 
