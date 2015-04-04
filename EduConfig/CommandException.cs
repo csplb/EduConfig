@@ -1,18 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace Pollub.EduConfig
 {
-    [Serializable]
+    /// <summary>
+    /// Własna klasa wyjątku, dla rozpoznawania, że to komenda zakończyła się z błędem
+    /// </summary>
+    [Serializable]    
     public class CommandException : Exception
     {
         public CommandException() { }
         public CommandException(string message) : base(message) { }
         public CommandException(string message, Exception inner) : base(message, inner) { }
         protected CommandException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context)
+          SerializationInfo info,
+          StreamingContext context)
             : base(info, context) { }
     }
 }
